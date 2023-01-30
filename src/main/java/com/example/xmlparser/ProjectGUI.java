@@ -62,7 +62,7 @@ public class ProjectGUI extends Application {
         buttonBox.setPadding(new Insets(5, 0, 5, 0));
 
         stage.setScene(new Scene(root, 720, 480));
-        stage.setTitle("Text Area Example");
+        stage.setTitle("Xml Parser");
         stage.setResizable(false);
         stage.show();
     }
