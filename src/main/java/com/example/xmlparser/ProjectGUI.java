@@ -4,6 +4,7 @@ import helpers.LZW.Compressor;
 import helpers.LZW.Decompressor;
 import helpers.XmlConsistencyChecker;
 import helpers.XmlMinifier;
+import helpers.XmlTree;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -15,6 +16,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -37,21 +39,20 @@ public class ProjectGUI extends Application {
         Button openFileButton = new Button("Open File");
         Button checkConsistency = new Button("Check Consistency");
         Button minifyBtn = new Button("Minify");
-        Button clearLeftButton = new Button("Clear Left");
-        Button clearRightButton = new Button("Clear Right");
+        Button toJsonBtn = new Button("to Json");
+        Button placeHolderBtn = new Button("placeHolder");
         Button compressorBtn = new Button("Compress");
         Button decompressBtn = new Button("Decompress");
 
         openFileButton.setOnAction(event -> openFile());
         checkConsistency.setOnAction(event -> checkConsistency());
         minifyBtn.setOnAction(event -> minify());
-        clearLeftButton.setOnAction(event -> clearLeft());
-        clearRightButton.setOnAction(event -> clearRight());
+        toJsonBtn.setOnAction(event -> to_json());
+        placeHolderBtn.setOnAction(event -> placeHolder());
         decompressBtn.setOnAction(event -> deCompress());
         compressorBtn.setOnAction(event -> compress());
 
-        HBox utilBtnBox = new HBox(checkConsistency, minifyBtn,
-                clearLeftButton, clearRightButton, compressorBtn, decompressBtn);
+        HBox utilBtnBox = new HBox(checkConsistency, minifyBtn, toJsonBtn, placeHolderBtn, compressorBtn, decompressBtn);
         VBox buttonBox = new VBox(openFileButton, utilBtnBox);
         HBox textBox = new HBox(leftTextArea, rightTextArea);
         VBox root = new VBox(textBox, buttonBox);
@@ -121,11 +122,19 @@ public class ProjectGUI extends Application {
         }
     }
 
-    private void clearLeft() {
-        leftTextArea.clear();
+    private void to_json() {
+        isFileOpened();
+        XmlTree xmlTree = null;
+        try {
+            xmlTree = new XmlTree(openedFile);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            openFile();
+        }
+        rightTextArea.setText(xmlTree.toJson());
     }
 
-    private void clearRight() {
+    private void placeHolder() {
         rightTextArea.clear();
     }
 

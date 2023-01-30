@@ -1,9 +1,9 @@
 package helpers;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+import helpers.utils.FILE_TYPE;
+import helpers.utils.FileSaver;
+
+import java.io.*;
 import java.util.*;
 
 class Node {
@@ -18,17 +18,18 @@ class Node {
     }
 }
 
-class Tree {
+public class XmlTree {
     Node root;
-    FileReader tFile;
+    File tFile;
 
-    Tree(Node root, String filePath) throws FileNotFoundException {
-        this.root = root;
-        this.tFile = new FileReader(filePath);
+    public XmlTree(File f) throws FileNotFoundException {
+        this.root = new Node("", "");
+        this.tFile = f;
     }
 
     private String extractText() throws IOException {
-        BufferedReader br = new BufferedReader(tFile);
+        FileReader fileReader = new FileReader(tFile);
+        BufferedReader br = new BufferedReader(fileReader);
         StringBuilder text = new StringBuilder("");
         String line = br.readLine();
         while (line != null) {
@@ -105,16 +106,20 @@ class Tree {
             json.append("}");
         }
     }
-
+    private String getPath() {
+        return tFile.getParentFile().getAbsolutePath() + "/";
+    }
     public String toJson() {
         StringBuilder json = new StringBuilder();
-        json.append("{");
+        buildTree();
         toJsonHelper(json, root);
-        json.append("}");
-        return json.toString();
+        String prettyJson = prettifyJson(json.toString()).substring(3);
+        new FileSaver().outputToFile(prettyJson,getPath()+"jsonFile", FILE_TYPE.json);
+        System.out.println(prettyJson);
+        return prettyJson;
     }
 
-    public static String prettifyJson(String json) {
+    public String prettifyJson(String json) {
         StringBuilder builder = new StringBuilder();
         int indent = 0;
         boolean inString = false;
@@ -160,19 +165,6 @@ class Tree {
     private static void addIndent(StringBuilder builder, int indent) {
         for (int i = 0; i < indent; i++) {
             builder.append("    ");
-        }
-    }
-
-
-    public static void main(String[] args) {
-        Node rooti = new Node("", "");
-        try {
-        Tree treeri = new Tree(rooti,"C://Users//ahmed//Desktop//bang//src//com//company//gg.txt");
-        treeri.buildTree();
-        System.out.println(prettifyJson(treeri.toJson()));
-
-        }catch (Exception e){
-            e.printStackTrace();
         }
     }
 }

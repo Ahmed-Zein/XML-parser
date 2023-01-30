@@ -15,10 +15,9 @@ public class FileSaver {
                 e.printStackTrace();
             }
         } else if (fileType == FILE_TYPE.json) {
-            String json = "{\"text\": \"" + input + "\"}";
             try {
                 FileWriter file = new FileWriter(fileName + ".json");
-                file.write(json);
+                file.write(input);
                 file.close();
             } catch (IOException e) {
                 e.printStackTrace();
