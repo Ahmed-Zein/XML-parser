@@ -1,10 +1,8 @@
 package com.example.xmlparser;
 
+import helpers.*;
 import helpers.LZW.Compressor;
 import helpers.LZW.Decompressor;
-import helpers.XmlConsistencyChecker;
-import helpers.XmlMinifier;
-import helpers.XmlTree;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -40,19 +38,21 @@ public class ProjectGUI extends Application {
         Button checkConsistency = new Button("Check Consistency");
         Button minifyBtn = new Button("Minify");
         Button toJsonBtn = new Button("to Json");
-        Button placeHolderBtn = new Button("placeHolder");
+        Button correctXmlBtn = new Button("Correct xml");
         Button compressorBtn = new Button("Compress");
         Button decompressBtn = new Button("Decompress");
+        Button prettifyBtn = new Button("Prettify");
 
         openFileButton.setOnAction(event -> openFile());
         checkConsistency.setOnAction(event -> checkConsistency());
         minifyBtn.setOnAction(event -> minify());
         toJsonBtn.setOnAction(event -> to_json());
-        placeHolderBtn.setOnAction(event -> placeHolder());
+        correctXmlBtn.setOnAction(event -> correctXml());
         decompressBtn.setOnAction(event -> deCompress());
         compressorBtn.setOnAction(event -> compress());
+        prettifyBtn.setOnAction(event -> prettify());
 
-        HBox utilBtnBox = new HBox(checkConsistency, minifyBtn, toJsonBtn, placeHolderBtn, compressorBtn, decompressBtn);
+        HBox utilBtnBox = new HBox(checkConsistency, minifyBtn, toJsonBtn, correctXmlBtn, compressorBtn, decompressBtn, prettifyBtn);
         VBox buttonBox = new VBox(openFileButton, utilBtnBox);
         HBox textBox = new HBox(leftTextArea, rightTextArea);
         VBox root = new VBox(textBox, buttonBox);
@@ -65,6 +65,16 @@ public class ProjectGUI extends Application {
         stage.setTitle("Xml Parser");
         stage.setResizable(false);
         stage.show();
+    }
+
+    private void prettify() {
+        try {
+
+        XmlPrettifies prettifies = new XmlPrettifies();
+        rightTextArea.setText(prettifies.prettify(openedFile));
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     private void isFileOpened() {
@@ -134,8 +144,13 @@ public class ProjectGUI extends Application {
         rightTextArea.setText(xmlTree.toJson());
     }
 
-    private void placeHolder() {
-        rightTextArea.clear();
+    private void correctXml() {
+        XmlFileChecker checker = new XmlFileChecker(openedFile);
+        try {
+            rightTextArea.setText(checker.checkAndCorrect());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public static void main(String[] args) {
