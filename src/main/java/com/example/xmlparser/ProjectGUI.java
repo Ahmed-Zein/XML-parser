@@ -38,17 +38,15 @@ public class ProjectGUI extends Application {
         rightTextArea.setWrapText(true);
 
         Button openFileButton = new Button("Open File");
-        Button checkConsistency = new Button("Check Consistency");
         Button minifyBtn = new Button("Minify");
         Button toJsonBtn = new Button("to Json");
         Button correctXmlBtn = new Button("Correct xml");
         Button compressorBtn = new Button("Compress");
         Button decompressBtn = new Button("Decompress");
         Button prettifyBtn = new Button("Prettify");
-        Button analyzeGraphBtn = new Button("analyze graph");
+        Button analyzeGraphBtn = new Button("Analyze graph");
 
         openFileButton.setOnAction(event -> openFile());
-        checkConsistency.setOnAction(event -> checkConsistency());
         minifyBtn.setOnAction(event -> minify());
         toJsonBtn.setOnAction(event -> to_json());
         correctXmlBtn.setOnAction(event -> correctXml());
@@ -57,7 +55,7 @@ public class ProjectGUI extends Application {
         prettifyBtn.setOnAction(event -> prettify());
         analyzeGraphBtn.setOnAction(event -> analyzeThis());
 
-        HBox utilBtnBox = new HBox(checkConsistency, minifyBtn, toJsonBtn, correctXmlBtn, compressorBtn, decompressBtn, prettifyBtn);
+        HBox utilBtnBox = new HBox(minifyBtn, toJsonBtn, correctXmlBtn, compressorBtn, decompressBtn, prettifyBtn);
         VBox buttonBox = new VBox(openFileButton, utilBtnBox, analyzeGraphBtn);
         HBox textBox = new HBox(leftTextArea, rightTextArea);
         VBox root = new VBox(textBox, buttonBox);
@@ -119,15 +117,6 @@ public class ProjectGUI extends Application {
         String data = deCompressor.deCompress();
         saver.outputToFile(data, "decompressed", FILE_TYPE.text, openedFile);
         rightTextArea.setText(data);
-    }
-
-
-    private void checkConsistency() {
-        isFileOpened();
-        XmlConsistencyChecker checker = new XmlConsistencyChecker(openedFile);
-        rightTextArea.clear();
-        if (checker.checkConsistency()) rightTextArea.setText("the file is consistent");
-        else rightTextArea.setText("the file is not consistent");
     }
 
     private void minify() {
