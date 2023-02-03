@@ -17,7 +17,8 @@ public class FileSaver {
         return saver;
     }
 
-    public void outputToFile(String input, String fileName, FILE_TYPE fileType) {
+    public void outputToFile(String input,String fileName, FILE_TYPE fileType,File openedFile) {
+        fileName = getPath(openedFile)+fileName;
         if (fileType == FILE_TYPE.text) {
             try {
                 FileWriter writer = new FileWriter(fileName + ".txt");
@@ -39,7 +40,7 @@ public class FileSaver {
         }
     }
 
-    public String getPath(File tFile) {
+    private String getPath(File tFile) {
         return tFile.getParentFile().getAbsolutePath() + "/";
     }
 

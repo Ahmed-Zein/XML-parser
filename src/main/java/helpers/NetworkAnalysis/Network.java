@@ -17,16 +17,18 @@ import java.util.Map;
 
 public class Network {
     private final File xmlFile;
-    private final HashMap<Integer, User> users;
+    public final HashMap<Integer, User> users;
     ArrayList<ArrayList<Integer>> adjacencyMatrix = new ArrayList<>();
 
     public Network(File xmlFile) {
         this.xmlFile = xmlFile;
         users = new HashMap<>();
-        for (int i = 0; i < users.size(); i++) {
-            adjacencyMatrix.add(new ArrayList<>(Collections.nCopies(users.size(), 0)));
-        }
 
+    }
+
+    public ArrayList<ArrayList<Integer>> getAdjacencyMatrix() {
+        buildAdjacencyList();
+        return adjacencyMatrix;
     }
 
     private void loadUsers() {
@@ -77,7 +79,7 @@ public class Network {
         }
     }
 
-    public void buildAdjacencyList() {
+    private void buildAdjacencyList() {
         loadUsers();
         User user;
         int i = 0;

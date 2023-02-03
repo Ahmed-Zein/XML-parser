@@ -1,8 +1,10 @@
 package com.example.xmlparser;
 
+import com.example.xmlparser.stages.AnalyzerStage;
 import helpers.LZW.Compressor;
 import helpers.LZW.Decompressor;
 import helpers.*;
+import helpers.utils.FILE_TYPE;
 import helpers.utils.FileSaver;
 import javafx.application.Application;
 import javafx.geometry.Insets;
@@ -10,7 +12,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -74,15 +75,6 @@ public class ProjectGUI extends Application {
         stage.show();
     }
 
-    private void prettify() {
-        try {
-
-            XmlPrettifies prettifies = new XmlPrettifies();
-            rightTextArea.setText(prettifies.prettify(openedFile));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
     private void isFileOpened() {
         if (openedFile == null) openFile();
@@ -103,17 +95,31 @@ public class ProjectGUI extends Application {
         }
     }
 
+    private void prettify() {
+        try {
+
+            XmlPrettifies prettifies = new XmlPrettifies();
+            String prettyData = prettifies.prettify(openedFile);
+            saver.outputToFile(prettyData, "decompressed", FILE_TYPE.text, openedFile);
+            rightTextArea.setText(prettyData);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     private void compress() {
         isFileOpened();
         Compressor compressor = new Compressor(openedFile);
-        rightTextArea.setText(compressor.compress());
+        String data = compressor.compress();
+        saver.outputToFile(data, "decompressed", FILE_TYPE.text, openedFile);
+        rightTextArea.setText(data);
     }
 
     private void deCompress() {
-        openFile();
+        isFileOpened();
         Decompressor deCompressor = new Decompressor(openedFile);
         String data = deCompressor.deCompress();
-//        saveToFile(data, "DecompressedFile", FILE_TYPE.text);
+        saver.outputToFile(data, "decompressed", FILE_TYPE.text, openedFile);
         rightTextArea.setText(data);
     }
 
@@ -130,7 +136,9 @@ public class ProjectGUI extends Application {
         isFileOpened();
         XmlMinifier minifier = new XmlMinifier(openedFile);
         try {
-            rightTextArea.setText(minifier.minifyXml());
+            String miniData = minifier.minifyXml();
+            saver.outputToFile(miniData, "decompressed", FILE_TYPE.text, openedFile);
+            rightTextArea.setText(miniData);
         } catch (Exception e) {
             e.printStackTrace();
             openFile();
@@ -142,10 +150,9 @@ public class ProjectGUI extends Application {
         XmlTree xmlTree;
         try {
             xmlTree = new XmlTree(openedFile);
-
-        String json = xmlTree.toJson();
-//        saveToFile(json,FILE_TYPE.json);
-        rightTextArea.setText(json);
+            String jsonData = xmlTree.toJson();
+            saver.outputToFile(jsonData, "decompressed", FILE_TYPE.text, openedFile);
+            rightTextArea.setText(jsonData);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
             openFile();
@@ -153,6 +160,7 @@ public class ProjectGUI extends Application {
     }
 
     private void correctXml() {
+        isFileOpened();
         XmlFileChecker checker = new XmlFileChecker(openedFile);
         try {
             rightTextArea.setText(checker.checkAndCorrect());
@@ -162,12 +170,10 @@ public class ProjectGUI extends Application {
     }
 
     public void analyzeThis() {
-        Stage stage = new Stage();
-        stage.setTitle("Social Network Analyzer");
-        stage.setScene(new Scene(new StackPane(), 300, 250));
-
-        stage.show();
-    }
+        isFileOpened();
+        AnalyzerStage analyzerStage = new AnalyzerStage(openedFile);
+        analyzerStage.start();
+     }
 
     public static void main(String[] args) {
         launch();
