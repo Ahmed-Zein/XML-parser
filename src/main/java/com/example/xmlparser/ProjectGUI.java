@@ -16,9 +16,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Files;
 
 public class ProjectGUI extends Application {
@@ -164,9 +162,15 @@ public class ProjectGUI extends Application {
         XMLFixer checker = new XMLFixer(openedFile);
         try {
             checker.fixXML();
-            rightTextArea.setText("");
-        } catch (Exception e) {
-            e.printStackTrace();
+            BufferedReader br = new BufferedReader(new FileReader(checker.getOutputFile()));
+            String data = "";
+            String line;
+            while ((line = br.readLine()) != null) {
+                 data += line;
+            }
+            rightTextArea.setText(data);
+        } catch (IOException ex) {
+            ex.printStackTrace();
         }
     }
 
@@ -174,7 +178,7 @@ public class ProjectGUI extends Application {
         isFileOpened();
         AnalyzerStage analyzerStage = new AnalyzerStage(openedFile);
         analyzerStage.start();
-     }
+    }
 
     public static void main(String[] args) {
         launch();

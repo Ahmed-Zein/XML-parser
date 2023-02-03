@@ -1,9 +1,8 @@
 package helpers;
 
-import helpers.utils.FILE_TYPE;
-import helpers.utils.FileSaver;
-
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 
 public class XmlMinifier {
     File tFile;

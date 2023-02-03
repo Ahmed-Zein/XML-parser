@@ -8,6 +8,10 @@ public class XMLFixer {
     private final File inputFile;
     private final File outputFile;
 
+    public File getOutputFile() {
+        return outputFile;
+    }
+
     public XMLFixer(File inputFile) {
         tagStack = new Stack<>();
         this.inputFile = inputFile;
@@ -20,6 +24,7 @@ public class XMLFixer {
             String line;
             while ((line = br.readLine()) != null) {
                 line = fixLine(line);
+                if (line.contains("<>")) continue;
                 bw.write(line);
                 bw.newLine();
             }
