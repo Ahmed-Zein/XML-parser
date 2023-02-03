@@ -161,9 +161,10 @@ public class ProjectGUI extends Application {
 
     private void correctXml() {
         isFileOpened();
-        XmlFileChecker checker = new XmlFileChecker(openedFile);
+        XMLFixer checker = new XMLFixer(openedFile);
         try {
-            rightTextArea.setText(checker.checkAndCorrect());
+            checker.fixXML();
+            rightTextArea.setText("");
         } catch (Exception e) {
             e.printStackTrace();
         }
