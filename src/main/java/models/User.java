@@ -6,10 +6,10 @@ import java.util.List;
 public class User {
     private int id;
     private String name;
-    private List<Post> posts;
+    private ArrayList<Post> posts;
     private ArrayList<Integer> followersIDs;
 
-    public User(int id, String name, List<Post> posts, ArrayList<Integer> followers) {
+    public User(int id, String name, ArrayList<Post> posts, ArrayList<Integer> followers) {
         this.id = id;
         this.name = name;
         this.posts = posts;
@@ -36,7 +36,7 @@ public class User {
         return posts;
     }
 
-    public void setPosts(List<Post> posts) {
+    public void setPosts(ArrayList<Post> posts) {
         this.posts = posts;
     }
 

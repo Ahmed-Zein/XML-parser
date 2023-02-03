@@ -20,7 +20,7 @@ public class Decompressor extends LZW {
         String oldPhrase = currentChar;
         String out = currentChar;
         int code = 256;
-        String phrase = "";
+        String phrase;
         for (int i = 1; i < data.length; i++) {
             int currCode = Character.codePointAt(data[i], 0);
             if (currCode < 256) {
@@ -38,7 +38,6 @@ public class Decompressor extends LZW {
             code++;
             oldPhrase = phrase;
         }
-        outputToFile(out, "DecompressedFile", FILE_TYPE.text);
         return out;
     }
 }

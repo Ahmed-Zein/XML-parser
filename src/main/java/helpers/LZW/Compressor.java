@@ -45,7 +45,7 @@ public class Compressor extends LZW {
         for (String outchar : temp_out) {
             out += outchar;
         }
-        super.outputToFile(out,"compressedFile", FILE_TYPE.text);
+//        super.outputToFile(out,"compressedFile", FILE_TYPE.text);
         return out;
     }
 

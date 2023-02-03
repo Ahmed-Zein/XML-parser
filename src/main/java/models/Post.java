@@ -1,12 +1,13 @@
 package models;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Post {
     private String body;
     private List<String> topics;
 
-    public Post(String body, List<String> topics) {
+    public Post(String body, ArrayList<String> topics) {
         this.body = body;
         this.topics = topics;
     }

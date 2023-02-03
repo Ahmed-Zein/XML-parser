@@ -38,16 +38,8 @@ public class XmlMinifier {
             }
         }
         reader.close();
-        this.outputToFile(sb.toString(), "minified", FILE_TYPE.text);
         return sb.toString();
 
     }
 
-    private String getPath() {
-        return tFile.getParentFile().getAbsolutePath() + "/";
-    }
-
-    private void outputToFile(String input, String fileName, FILE_TYPE fileType) {
-        new FileSaver().outputToFile( input,getPath() + fileName, fileType);
-    }
 }

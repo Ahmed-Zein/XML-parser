@@ -1,8 +1,5 @@
 package helpers;
 
-import helpers.utils.FILE_TYPE;
-import helpers.utils.FileSaver;
-
 import java.io.*;
 import java.util.*;
 
@@ -14,7 +11,7 @@ class Node {
     Node(String name, String value) {
         this.name = name;
         this.value = value;
-        this.children = new ArrayList<Node>();
+        this.children = new ArrayList<>();
     }
 }
 
@@ -30,7 +27,7 @@ public class XmlTree {
     private String extractText() throws IOException {
         FileReader fileReader = new FileReader(tFile);
         BufferedReader br = new BufferedReader(fileReader);
-        StringBuilder text = new StringBuilder("");
+        StringBuilder text = new StringBuilder();
         String line = br.readLine();
         while (line != null) {
             text.append(line.trim()).append(System.lineSeparator());
@@ -45,7 +42,7 @@ public class XmlTree {
         try {
             xml = extractText();
             Node currentNode = root;
-            Stack<Node> stack = new Stack<Node>();
+            Stack<Node> stack = new Stack<>();
             stack.push(currentNode);
             int i = 0;
             while (i < xml.length()) {
@@ -79,18 +76,6 @@ public class XmlTree {
         }
     }
 
-    void traverseBFS() {
-        Queue<Node> queue = new LinkedList<Node>();
-        queue.add(root);
-        while (!queue.isEmpty()) {
-            Node currentNode = queue.poll();
-            System.out.println("node: " + currentNode.name + "\t value: " + currentNode.value);
-            for (Node child : currentNode.children) {
-                queue.add(child);
-            }
-        }
-    }
-
     private void toJsonHelper(StringBuilder json, Node node) {
         json.append("\"").append(node.name.trim()).append("\":");
         if (node.children.isEmpty()) {
@@ -106,15 +91,12 @@ public class XmlTree {
             json.append("}");
         }
     }
-    private String getPath() {
-        return tFile.getParentFile().getAbsolutePath() + "/";
-    }
+
     public String toJson() {
         StringBuilder json = new StringBuilder();
         buildTree();
         toJsonHelper(json, root);
         String prettyJson = prettifyJson(json.toString()).substring(3);
-        new FileSaver().outputToFile(prettyJson,getPath()+"jsonFile", FILE_TYPE.json);
         System.out.println(prettyJson);
         return prettyJson;
     }
@@ -132,30 +114,26 @@ public class XmlTree {
                 builder.append(c);
             } else {
                 switch (c) {
-                    case '{':
-                    case '[':
+                    case '{', '[' -> {
                         builder.append(c).append("\n");
                         indent++;
                         addIndent(builder, indent);
-                        break;
-                    case '}':
-                    case ']':
+                    }
+                    case '}', ']' -> {
                         builder.append("\n");
                         indent--;
                         addIndent(builder, indent);
                         builder.append(c);
-                        break;
-                    case ',':
+                    }
+                    case ',' -> {
                         builder.append(c).append("\n");
                         addIndent(builder, indent);
-                        break;
-                    case '\"':
+                    }
+                    case '\"' -> {
                         inString = true;
                         builder.append(c);
-                        break;
-                    default:
-                        builder.append(c);
-                        break;
+                    }
+                    default -> builder.append(c);
                 }
             }
         }
@@ -163,8 +141,6 @@ public class XmlTree {
     }
 
     private static void addIndent(StringBuilder builder, int indent) {
-        for (int i = 0; i < indent; i++) {
-            builder.append("    ");
-        }
+        builder.append("    ".repeat(Math.max(0, indent)));
     }
 }
