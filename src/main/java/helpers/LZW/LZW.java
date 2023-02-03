@@ -38,12 +38,5 @@ public abstract class LZW {
         }
     }
 
-    private String getPath() {
-        return tFile.getParentFile().getAbsolutePath() + "/";
-    }
-
-    protected void outputToFile(String input, String fileName, FILE_TYPE fileType) {
-        new FileSaver().outputToFile(input,getPath() +  fileName, fileType);
-    }
 }
 

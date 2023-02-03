@@ -11,15 +11,22 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Network {
     private final File xmlFile;
-    private final ArrayList<User> users;
-    ArrayList<ArrayList<Integer>> edges = new ArrayList<>();
+    private final HashMap<Integer, User> users;
+    ArrayList<ArrayList<Integer>> adjacencyMatrix = new ArrayList<>();
 
     public Network(File xmlFile) {
         this.xmlFile = xmlFile;
-        users = new ArrayList<>(100);
+        users = new HashMap<>();
+        for (int i = 0; i < users.size(); i++) {
+            adjacencyMatrix.add(new ArrayList<>(Collections.nCopies(users.size(), 0)));
+        }
+
     }
 
     private void loadUsers() {
@@ -62,7 +69,7 @@ public class Network {
                         Element followerElement = (Element) followerNode;
                         followers.add(Integer.valueOf(followerElement.getElementsByTagName("id").item(0).getTextContent()));
                     }
-                    users.add(new User(id, name, userPosts, followers));
+                    users.put(id, new User(id, name, userPosts, followers));
                 }
             }
         } catch (Exception e) {
@@ -73,30 +80,77 @@ public class Network {
     public void buildAdjacencyList() {
         loadUsers();
         User user;
-        for (int i = 0; i < users.size(); i++) {
-            user = users.get(i);
-            edges.add(new ArrayList<>());
+        int i = 0;
+        for (Map.Entry<Integer, User> entry : users.entrySet()) {
+            user = entry.getValue();
+            adjacencyMatrix.add(new ArrayList<>());
             int itr = users.size() - 1;
             while (itr-- >= 0) {
-                edges.get(i).add(0);
+                adjacencyMatrix.get(i).add(0);
             }
-
+            if (user == null) continue;
             for (int j = 0; j < user.getFollowers().size(); j++) {
-                edges.get(i).set(user.getFollowers().get(j) - 1, user.getFollowers().get(j));
+                adjacencyMatrix.get(i).set(user.getFollowers().get(j) - 1, 1);
             }
+            i++;
         }
     }
+
+
+    public User getMostInference() { //has the most followers
+        int maxFollowers = 0;
+        User userWithMostFollowers = null;
+
+        for (Map.Entry<Integer, User> entry : users.entrySet()) {
+            int followers = entry.getValue().getFollowers().size();
+            if (followers > maxFollowers) {
+                maxFollowers = followers;
+                userWithMostFollowers = entry.getValue();
+            }
+        }
+        return userWithMostFollowers;
+    }
+
+    public User getMostActive() {
+        ArrayList<Integer> freq = new ArrayList<>(users.size());
+        for (int i = 0; i < users.size(); i++) {//initialize the array with zero
+            freq.add(0);
+        }
+        for (int i = 0; i < users.size(); i++) {
+            ArrayList<Integer> row = adjacencyMatrix.get(i);
+            for (int j = 0; j < row.size(); j++) {
+                freq.set(j, freq.get(j) + row.get(j));
+            }
+        }
+        System.out.println(freq);
+        int maxVal = Integer.MIN_VALUE;
+        int idx = 1;
+        for (int i = 0; i < freq.size(); i++) {
+            if (freq.get(i) > maxVal) idx = i;
+        }
+        return users.get(idx);
+    }
+
 
     public static void main(String[] args) {
         File file = new File("C:/Users/ahmed/Desktop/outputs/sample.xml");
         Network net = new Network(file);
         net.buildAdjacencyList();
-        for (int i = 0; i < net.edges.size(); i++) {
-            ArrayList<Integer> row = net.edges.get(i);
+        for (int i = 0; i < net.adjacencyMatrix.size(); i++) {
+            ArrayList<Integer> row = net.adjacencyMatrix.get(i);
             for (Integer integer : row) {
                 System.out.print("[ " + integer + " ]" + "\t");
             }
             System.out.println();
+
         }
+        System.out.println(net.users.get(1).getFollowers());
+        System.out.println(net.users.get(2).getFollowers());
+        System.out.println(net.users.get(3).getFollowers());
+        System.out.println(net.users.get(4).getFollowers());
+        System.out.println(net.users.get(5).getFollowers());
+
+        System.out.println("who has many followers" + net.getMostInference().getName());
+        System.out.println("most Active" + net.getMostActive().getId() + net.getMostActive().getName());
     }
 }
